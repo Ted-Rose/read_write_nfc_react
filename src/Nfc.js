@@ -2,44 +2,32 @@ import React, { useEffect } from "react";
 
 const Nfc = () => {
   useEffect(() => {
-    const ChromeSamples = {
-      log: function () {
-        var line = Array.prototype.slice
-          .call(arguments)
-          .map(function (argument) {
-            return typeof argument === "string"
-              ? argument
-              : JSON.stringify(argument);
-          })
-          .join(" ");
+    const log = (...args) => {
+      const line = args
+        .map((argument) =>
+          typeof argument === "string" ? argument : JSON.stringify(argument)
+        )
+        .join(" ");
 
-        document.querySelector("#log").textContent += line + "\n";
-      },
-
-      setStatus: function (status) {
-        document.querySelector("#status").textContent = status;
-      },
-
-      setContent: function (newContent) {
-        var content = document.querySelector("#content");
-        while (content.hasChildNodes()) {
-          content.removeChild(content.lastChild);
-        }
-        content.appendChild(newContent);
-      }
+      document.querySelector("#log").textContent += line + "\n";
     };
 
-    const log = ChromeSamples.log;
+    const setStatus = (status) => {
+      document.querySelector("#status").textContent = status;
+    };
+
+    const setContent = (newContent) => {
+      const content = document.querySelector("#content");
+      while (content.hasChildNodes()) {
+        content.removeChild(content.lastChild);
+      }
+      content.appendChild(newContent);
+    };
 
     const scanButton = document.querySelector("#scanButton");
-    const logElement = document.querySelector("#log");
-    const statusElement = document.querySelector("#status");
-    const contentElement = document.querySelector("#content");
 
     if (!("NDEFReader" in window))
-      ChromeSamples.setStatus(
-        "Web NFC is not available. Use Chrome on Android."
-      );
+      setStatus("Web NFC is not available. Use Chrome on Android.");
 
     scanButton.addEventListener("click", async () => {
       log("User clicked scan button");
@@ -64,7 +52,7 @@ const Nfc = () => {
   }, []);
 
   return (
-    <div id="output" className="output">
+    <div className="output">
       <div id="content"></div>
       <div id="status"></div>
       <pre id="log"></pre>
